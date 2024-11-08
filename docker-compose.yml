@@ -1,0 +1,48 @@
+version: '3.9'
+
+services:
+  app:
+    # build: .
+    # container_name: node-app
+    image: node:20-alpine
+    # name: app
+    working_dir: /app
+    # ports:
+    # - "3000:9229"
+    volumes:
+    - ./:/app
+    command: tail -f /dev/null
+      # deploy:
+      #   resources:
+      #     limits:
+      #       memory: 300M
+      #     reservations:
+      #       memory: 300M
+      
+  upload:
+    # build: .
+    # container_name: node-app
+    image: golang:alpine
+    # name: app
+    working_dir: /app
+    # ports:
+    # - "3000:9229"
+    volumes:
+    - ./:/app
+    command: tail -f /dev/null
+    
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: cadvisor
+    ports:
+      - "3000:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    privileged: true
+    devices:
+      - /dev/kmsg:/dev/kmsg
+    #restart: unless-stopped
